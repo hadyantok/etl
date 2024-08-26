@@ -29,8 +29,8 @@ default_args = {
 dag = DAG(
     'daily_candy_test',
     default_args=default_args,
-    description='A simple Hello World DAG',
-    schedule_interval='0 1 * * *',  # Run once a day at 1am
+    description='A simple DAG',
+    schedule_interval='5 * * * *',  # Run once a day at 1am
     start_date=datetime(2024, 8, 27),
     catchup=False,          
 )
