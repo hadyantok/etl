@@ -31,7 +31,7 @@ dag = DAG(
     default_args=default_args,
     description='A simple DAG',
     schedule_interval='5 * * * *',  # Run once a day at 1am
-    start_date=datetime(2024, 8, 27),
+    start_date=datetime(2024, 8, 26),
     catchup=False,          
 )
 
