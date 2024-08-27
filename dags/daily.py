@@ -33,7 +33,7 @@ dag = DAG(
     description='A simple DAG',
     schedule_interval='5 1 * * *',  # Run once a day at 1am
     start_date=datetime(2024, 8, 26),
-    catchup=False,          
+    catchup=True,          
 )
 
 # Create the PythonOperator task
@@ -51,10 +51,9 @@ check_reqs_task = PythonOperator(
 
 test_docker_operator = DockerOperator(
         task_id='test_docker_operator',
-        image='ubuntu:latest',
+        image='hello-world',
         api_version='auto',
         auto_remove=True,  # Automatically remove the container once it's done
-        command="echo 'Hello from Docker!'",
         network_mode='bridge',
     )
 
