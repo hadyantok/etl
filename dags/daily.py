@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.docker_operator import DockerOperator
 
 # Define a function that will be executed by the PythonOperator
 def hello_world():
@@ -48,5 +49,14 @@ check_reqs_task = PythonOperator(
     dag=dag,
 )
 
+test_docker_operator = DockerOperator(
+        task_id='test_docker_operator',
+        image='ubuntu:latest',
+        api_version='auto',
+        auto_remove=True,  # Automatically remove the container once it's done
+        command="echo 'Hello from Docker!'",
+        network_mode='bridge',
+    )
+
 # Set the task to run
-hello_world_task >> check_reqs_task
+hello_world_task >> check_reqs_task >> test_docker_operator
