@@ -43,3 +43,16 @@ cd etl/setup/
 
 docker build . -f Dockerfile.task -t task_runner
 ```
+
+7. Setup temporary PG Database to mimic production env
+
+```
+docker run -d \
+  --name dummy_postgre \
+  -e POSTGRES_USER=candyuser \
+  -e POSTGRES_PASSWORD=candypassword \
+  -e POSTGRES_DB=candydb \
+  -v postgres-db-volume-candy:/var/lib/postgresql/data \
+  -p 5433:5432 \
+  postgres:13
+```

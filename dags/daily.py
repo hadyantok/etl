@@ -7,15 +7,6 @@ from airflow.operators.docker_operator import DockerOperator
 def hello_world():
     print("Hello, Candy.AI!")
 
-
-def check_libraries():
-    from google.cloud import bigquery
-    from google.cloud import storage
-    import sqlalchemy
-    print(f"BigQuery Client: {bigquery.Client}")
-    print(f"Google Cloud Storage Client: {storage.Client}")
-    print(f"SQLAlchemy Version: {sqlalchemy.__version__}")
-
 # Default arguments for the DAG
 default_args = {
     'owner': 'airflow',
@@ -43,12 +34,6 @@ hello_world_task = PythonOperator(
     dag=dag,
 )
 
-check_reqs_task = PythonOperator(
-    task_id='check_reqs_task',
-    python_callable=check_libraries,
-    dag=dag,
-)
-
 test_docker_operator = DockerOperator(
         task_id='test_docker_operator',
         image='hello-world',
@@ -58,4 +43,4 @@ test_docker_operator = DockerOperator(
     )
 
 # Set the task to run
-hello_world_task >> check_reqs_task >> test_docker_operator
+hello_world_task >> test_docker_operator

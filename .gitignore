@@ -163,3 +163,7 @@ cython_debug/
 
 # Docker compose because contain password
 docker-compose.yaml
+
+# temporary folder for local output
+temp/
+sa.json
