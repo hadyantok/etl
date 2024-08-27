@@ -35,3 +35,11 @@ sudo docker compose up airflow-init
 
 sudo docker compose up
 ```
+
+6. Build task docker image
+
+```
+cd etl/setup/
+
+docker build . -f Dockerfile.task -t task_runner
+```
