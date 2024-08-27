@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 # Copy the requirements file to the root of the container
 COPY requirements.txt .
@@ -9,7 +9,7 @@ WORKDIR /home/apps
 
 # Update and install necessary packages
 RUN apt-get -y update && \
-    apt-get -y install python3.11 python3-pip apt-transport-https ca-certificates gnupg curl
+    apt-get -y install python3-pip apt-transport-https ca-certificates gnupg curl
 
 # Upgrade pip
 RUN pip install --upgrade pip
