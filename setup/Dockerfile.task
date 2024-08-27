@@ -1,0 +1,24 @@
+FROM ubuntu:latest
+
+# Copy the requirements file to the root of the container
+COPY requirements.txt .
+
+# Create the /home/apps directory and set it as the working directory
+RUN mkdir -p /home/apps
+WORKDIR /home/apps
+
+# Update and install necessary packages
+RUN apt-get -y update && \
+    apt-get -y install python3.9 python3-pip apt-transport-https ca-certificates gnupg curl
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Add Google Cloud SDK repository and install it
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
+    apt-get update -y && \
+    apt-get install google-cloud-sdk -y
+
+# Install Python packages from the requirements file
+RUN pip install -r requirements.txt

@@ -1,0 +1,13 @@
+google-cloud-storage
+google-cloud-bigquery
+psycopg2-binary
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+pandas
+sentry-sdk
+SQLAlchemy
+pygsheets
+pandas-gbq
+python-dotenv
+beautifulsoup4
