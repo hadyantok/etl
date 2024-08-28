@@ -46,8 +46,7 @@ class Pg:
         # Extract dates from the result set
         date_list = [date[0] for date in date_list_tuple]
 
-        print("Date to run:")
-        print(date_list)
+        print(f"Date to run: {date_list}")
         
         return date_list
     

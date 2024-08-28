@@ -34,14 +34,19 @@ class Gcs:
 
         blob = bucket.blob(destination_blob)
         blob.upload_from_filename(source_file_name)
-
-    def upload_date_list(self, gcs_bucket, date_list, table_name):
-
-        # Ensure the directory exists
+    
+    def create_temp_directory(self, table_name):
         source_file_name = f"../temp/{table_name}/date_list.txt"
         directory = os.path.dirname(source_file_name)
         if directory:
             os.makedirs(directory, exist_ok=True)
+
+        return source_file_name
+
+    def upload_date_list(self, gcs_bucket, date_list, table_name):
+
+        # Ensure the directory exists
+        source_file_name = self.create_temp_directory(table_name)
 
         # write date_list into a file
         with open(source_file_name, "w") as date_list_file:
@@ -52,6 +57,23 @@ class Gcs:
         destination_blob = f"daily/{table_name}/date_list.txt"
         self.upload_to_gcs(gcs_bucket, source_file_name, destination_blob)
         print(f"date_list.txt uploaded to gs://{gcs_bucket}/{destination_blob} ")
+
+    def download_date_list(self, gcs_bucket, table_name):
+
+        # create temporary directory
+        destination_file_name = self.create_temp_directory(table_name)
+        
+        # download to local
+        bucket = self.client.bucket(gcs_bucket)
+        blob = bucket.blob(f"daily/{table_name}/date_list.txt")
+        blob.download_to_filename(destination_file_name)
+
+        # read file
+        with open(destination_file_name, "r") as date_list_file:
+            date_list = date_list_file.read().replace("'","").strip('][').split(', ')
+        
+        print(f"Date to run: {date_list}")
+        return date_list
 
     def delete_temp_directory(self, table_name):
         directory_path = f"../temp/{table_name}/"

@@ -7,8 +7,8 @@ bq = Bigquery()
 
 # setup variable
 gcs_bucket = 'candy-test-bucket'
-table_name = 'conversations'
-bq_table_name = 'staging.fd_conversations'
+table_name = 'messages'
+bq_table_name = 'staging.fd_messages'
 
 if __name__ == '__main__':
 

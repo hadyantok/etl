@@ -2,9 +2,10 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.docker_operator import DockerOperator
+from docker.types import Mount
 
 # Define a function that will be executed by the PythonOperator
-def hello_world():
+def hello_candy():
     print("Hello, Candy.AI!")
 
 # Default arguments for the DAG
@@ -28,19 +29,44 @@ dag = DAG(
 )
 
 # Create the PythonOperator task
-hello_world_task = PythonOperator(
-    task_id='hello_world_task',
-    python_callable=hello_world,
+hello_candy = PythonOperator(
+    task_id='hello_candy',
+    python_callable=hello_candy,
     dag=dag,
 )
 
-test_docker_operator = DockerOperator(
-        task_id='test_docker_operator',
-        image='hello-world',
+conversations_dummy_update = DockerOperator(
+        task_id='conversations_dummy_update',
+        image='task_runner',
         api_version='auto',
-        auto_remove=True,  # Automatically remove the container once it's done
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
         network_mode='bridge',
+        command="python3 -m conversations.dummy_update "
+    )
+
+conversations_to_gcs = DockerOperator(
+        task_id='conversations_to_gcs',
+        image='task_runner',
+        api_version='auto',
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
+        network_mode='bridge',
+        command="python3 -m conversations.to_gcs "
+    )
+
+conversations_to_bq = DockerOperator(
+        task_id='conversations_to_bq',
+        image='task_runner',
+        api_version='auto',
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
+        network_mode='bridge',
+        command="python3 -m conversations.to_bq "
     )
 
 # Set the task to run
-hello_world_task >> test_docker_operator
+hello_candy >> conversations_dummy_update >> conversations_to_gcs >> conversations_to_bq
