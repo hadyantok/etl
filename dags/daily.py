@@ -35,6 +35,8 @@ hello_candy = PythonOperator(
     dag=dag,
 )
 
+# conversations
+
 conversations_dummy_update = DockerOperator(
         task_id='conversations_dummy_update',
         image='task_runner',
@@ -68,5 +70,41 @@ conversations_to_bq = DockerOperator(
         command="python3 -m conversations.to_bq "
     )
 
+# Messages
+
+messages_dummy_update = DockerOperator(
+        task_id='messages_dummy_update',
+        image='task_runner',
+        api_version='auto',
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
+        network_mode='bridge',
+        command="python3 -m messages.dummy_update "
+    )
+
+messages_to_gcs = DockerOperator(
+        task_id='messages_to_gcs',
+        image='task_runner',
+        api_version='auto',
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
+        network_mode='bridge',
+        command="python3 -m messages.to_gcs "
+    )
+
+messages_to_bq = DockerOperator(
+        task_id='messages_to_bq',
+        image='task_runner',
+        api_version='auto',
+        auto_remove=True,
+        working_dir='/home/apps/app',
+        mounts=[Mount(target="/home/apps",source="/home/hady/etl",type="bind"),],
+        network_mode='bridge',
+        command="python3 -m messages.to_bq "
+    )
+
 # Set the task to run
 hello_candy >> conversations_dummy_update >> conversations_to_gcs >> conversations_to_bq
+hello_candy >> messages_dummy_update >> messages_to_gcs >> messages_to_bq
